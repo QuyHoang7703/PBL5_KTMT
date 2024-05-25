@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/Index.css')}}">
+    <script src="https://kit.fontawesome.com/861ca6bc6c.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="menuToggle"></div>
+        <div class="sidebar">
+            <ul>
+                <li class="logo" style="--bg: #333;">
+                    <a href="#" target="noidung">
+                        <div class="icon">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="text">Car Parking</div>
+                    </a>          
+                </li>
+                <div class="Menulist">
+                    <li style="--bg : #ffaa17;" class="active">
+                        <a href="/customer" target="noidung">
+                            <div class="icon">
+                                <i class="fa-solid fa-car"></i>
+                            </div>
+                            <div class="text">User Vehicle</div>
+                        </a>
+                    </li>
+                    <li style="--bg : #0fc70f;">
+                        <a href="/ticket" target="noidung">
+                            <div class="icon">
+                                <i class="fa-solid fa-briefcase"></i>
+                            </div>
+                            <div class="text">Manage Vehicle</div>
+                        </a>
+                    </li>
+                    <li style="--bg : #2196f3;">
+                        <a href="/history" target="noidung">
+                            <div class="icon">
+                                <i class="fa-solid fa-square-parking"></i>
+                            </div>
+                            <div class="text">Parking Log</div>
+                        </a>
+                    </li>
+                    <li style="--bg : #b145e9;">
+                        <a href="#">
+                            <div class="icon">
+                                <i class="fa-solid fa-desktop"></i>
+                            </div>
+                            <div class="text">Devices</div>
+                        </a>
+                    </li>
+                    <li style="--bg : #e91e63;">
+                        <a href="/camera" target="noidung">
+                            <div class="icon">
+                                <i class="fa-solid fa-camera"></i>
+                            </div>
+                            <div class="text">Direct to camera</div>
+                        </a>
+                    </li>
+                </div>
+                <div class="bottom">
+                    <li style="--bg: #333;">
+                        <a href="#">
+                            <div class="icon">
+                                <div class="imgBx">
+                                    <img src="{{ url_for('static',filename='picture/user.png')}}">
+                                </div>
+                            </div>
+                            <div class="text">Admin</div>
+                        </a>
+                    </li>
+                    <li id="Logout" style="--bg: #333">
+                        <a href="#">
+                            <div class="icon">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                            </div>
+                            <div class="text" >Logout</div>
+                        </a>
+                    </li>
+                </div>
+            </ul>
+        </div>
+
+        <div class="iframe-wrapper">
+            <iframe name="noidung"></iframe>
+        </div>
+    </div>
+    <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="{{ url_for('static',filename='js/Index.js')}}"></script>
+</body>
+</html>

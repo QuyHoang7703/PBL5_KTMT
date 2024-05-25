@@ -1,0 +1,162 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600);
+
+*, *:before, *:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px; /* Khoảng cách lề trên là 20px */
+  background: #14161e;
+  font-family: 'Open Sans', sans-serif;
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  height: 100vh; /* Đặt chiều cao của body là 100% chiều cao của màn hình */
+}
+
+.header {
+  display: flex;
+  margin-bottom: 20px;
+  width: 700px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 10px 10px 10px; /* Khoảng cách giữa nội dung và biên ngoài của phần tử */
+  border-radius: 5px; /* Bo góc */
+  background-color:  #264752; /* Màu nền */
+  color: #fff; /* Màu chữ */
+}
+a {
+  text-decoration: none; /* Loại bỏ gạch chân dưới văn bản liên kết */
+  display: inline-block; /* Cho phép đặt chiều rộng và chiều cao */
+  padding: 10px 20px; /* Khoảng cách giữa nội dung và biên ngoài của phần tử */
+  color: #E2B842;; /* Màu chữ */
+  font-family: 'Open Sans', sans-serif; /* Kiểu chữ */
+  font-weight: bold; /* Đậm */
+}
+.button-add {
+  width: 100px;
+  height: 100%;
+  background-color: #fff5;
+  padding: 0 .8rem;
+  border-radius: 2rem;
+  border-color: rgba(60, 156, 168, 0.333) ;
+  transition: .2s;
+}
+.button-add:hover { 
+  background-color: #fff;
+  transform: scale(1.15);
+  cursor: pointer;
+}
+.input-group {
+  width: 35%;
+  height: 100%;
+  background-color: #fff5;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  border-radius: 2rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: .2s;
+}
+.input-group:hover {
+  width: 45%;
+  background-color: #fff8;
+  box-shadow: 0 .1rem .4rem #0002;
+}
+.input-group img {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+.input-group input {
+  width: 100%;
+  padding: 0 .5rem 0 .3rem;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+.table__body {
+  width: 900px;
+  max-height: 700px;
+  background-color: #fffb;
+
+  margin: .8rem auto;
+  border-radius: .6rem;
+
+  overflow: auto;
+  overflow: overlay;
+}
+
+
+.table__body::-webkit-scrollbar{
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.table__body::-webkit-scrollbar-thumb{
+  border-radius: .5rem;
+  background-color: #0004;
+  visibility: hidden;
+}
+
+.table__body:hover::-webkit-scrollbar-thumb{ 
+  visibility: visible;
+}
+
+table {
+  background: #264752;
+  border-radius: 0.25em;
+  border-collapse: collapse;
+}
+th {
+  border-bottom: 1px solid #364043;
+  color: #E2B842;
+  font-size: 0.85em;
+  font-weight: 600;
+  padding: 0.5em 1em;
+  text-align: center;
+  width: 200px; 
+}
+td {
+  color: #fff;
+  font-weight: 400;
+  padding: 0.65em 1em;
+  text-align: center;
+}
+.disabled td {
+  color: #4F5F64;
+}
+tbody tr {
+  transition: background 0.25s ease;
+}
+tbody tr:hover {
+  background: #014055;
+}
+
+tbody tr.hide {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+tbody tr {
+  --delay: 1s;
+  transition: .5s ease-in-out var(--delay), background-color 0s;
+}
+
+tbody tr td
+{
+  transition: .2s ease-in-out;
+}
+
+tbody tr.hide td{
+  padding: 0;
+  font: 0 / 0 sans-serif;
+  transition: .2s ease-in-out .5s; 
+}

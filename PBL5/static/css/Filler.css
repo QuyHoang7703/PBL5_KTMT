@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700&display=swap');
+* 
+{
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+body{
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    /* background: linear-gradient(135deg, #71b7e6, #9b59b6); */
+    /* min-height: 100vh; */
+    background:  #14161e;
+}
+.container{
+    width: 500px;
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 5px;
+}
+.container .title{
+    font-size: 25px;
+    font-weight: 500;
+    position: relative;
+    margin-bottom: 10px;
+}
+.container .title::before{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom:0;
+    height: 3px;
+    width: 740px;
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+.container .confill{
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0 12px 0;
+}
+.container .confill .filter{
+    background: linear-gradient(-135deg,  #71b7e6, #9b59b6);
+    height: 200px;
+    width: 350px;
+    padding: 15px 15px 15px 15px;
+}
+
+.input-box{
+    margin-bottom: 15px;
+    width: 100%;
+}
+.input-box .details{
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.input-box input{
+    height: 45px;
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding-left: 15px;
+    font-size: 16px;
+    border-bottom-width: 2px;
+}
+.input-box input:focus,
+.input-box input:valid{
+    border-color: #9b59b6
+}
+.input-box select {
+    height: 45px;
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding-left: 15px;
+    font-size: 16px;
+    border-bottom-width: 2px;
+    -webkit-appearance: none; /* Loại bỏ giao diện mặc định của select */
+    -moz-appearance: none;
+    appearance: none;
+    background: url('your-arrow-icon.png') no-repeat right center; /* Thay thế mũi tên mặc định */
+    background-size: 20px; /* Điều chỉnh kích thước mũi tên */
+}
+
+.input-box select:focus {
+    border-color: #9b59b6;
+}
+
+ .button{
+    display: flex;
+    justify-content: space-between;
+    height: 45px;
+}
+ .button input{
+    height: 100%;
+    width: 100%;
+    outline: none;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 5px;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+ .button input:hover{
+    background: linear-gradient(-135deg,  #71b7e6, #9b59b6);
+}
+
+.input-box select {
+    height: 45px;
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding-left: 15px;
+    font-size: 16px;
+    border-bottom-width: 2px;
+    background-size: 20px; 
+}
+
+.input-box select:focus {
+    border-color: #9b59b6;
+}

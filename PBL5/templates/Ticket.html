@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Table.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Form.css') }}">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a id="ticketListLink">Danh sách vé</a>
+        <div class="input-group">
+            <input type="search" placeholder="Tìm kiếm thông tin...">
+            <img src="{{ url_for('static', filename='picture/search.png') }}" alt="Search Icon">
+        </div>
+        <input class="button-add" type="button" onclick="toggleAddTicketForm()" value="Thêm">
+    </div>
+
+    <form class="table__body">
+        <table id="ticketTable">
+            <thead>
+                <tr>
+                    <th style="width: 200px;">Vehicle Plate</th>
+                    <th style="width: 200px;">Init Date</th>
+                    <th style="width: 200px;">Expiry</th>
+                    <th style="width: 350px;">ID Customer</th>
+                </tr>
+            </thead>
+            <tbody id="ticketTableBody"></tbody>
+        </table>
+    </form>
+
+    <div id="addTicketForm" class="container hidden">
+        <div class="title">Ticket Information</div>
+        <form id="addTicketFormElement" onsubmit="createTicket(event)">
+            <div class="user-info">
+                <div class="input-box">
+                    <span class="details">Vehicle Plate</span>
+                    <input type="text" id="vehiclePlate" placeholder="Vehicle Plate..." required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Expiry</span>
+                    <input type="date" id="expiry" required>
+                </div>
+                <div class="input-box">
+                    <span class="details">ID Customer</span>
+                    <input type="number" id="customerId" placeholder="ID Customer..." required>
+                </div>
+                <div class="button">
+                    <input type="submit" value="Add">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="detailTicketForm" class="container hidden">
+        <div class="title">Ticket Information</div>
+        <form id="dticketForm" onsubmit="updateTicket(event, this)">
+            <div class="user-info">
+                <div class="input-box">
+                    <span class="details">Vehicle Plate</span>
+                    <input type="text" name="vehiclePlate_view" placeholder="Vehicle Plate..." required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Init Date</span>
+                    <input type="date" name="initDate_view" required readonly>
+                </div>
+                <div class="input-box">
+                    <span class="details">Expiry</span>
+                    <input type="date" name="expiry_view" required>
+                </div>
+                <div class="input-box">
+                    <span class="details">ID Customer</span>
+                    <input type="number" name="customerId_view" placeholder="ID Customer..." required>
+                </div>
+                <div class="button">
+                    <input type="submit" name="action" onclick="handleTicketAction(event, this.form, this.value)" value="Update">
+                </div>
+                <div class="button">
+                    <input type="submit" name="action" onclick="handleTicketAction(event, this.form, this.value)" value="Remove">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/Ticket.js') }}"></script>
+</body>
+</html>
+

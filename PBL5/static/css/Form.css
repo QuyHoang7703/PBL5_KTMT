@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700&display=swap');
+* 
+{
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+body {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: #14161e;
+    margin: 0; /* Loại bỏ margin mặc định */
+}
+
+.container {
+    width: 500px;
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 5px;
+}
+
+.container .title{
+    font-size: 25px;
+    font-weight: 500;
+    position: relative;
+    margin-bottom: 10px;
+}
+.container .title::before{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom:0;
+    height: 3px;
+    width: 100px;
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+
+.container form .question-info{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px 0 12px 0;
+}
+
+form .user-info .input-box{
+    margin-bottom: 15px;
+    width: 100%;
+}
+.user-info .input-box .details{
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.user-info .input-box input{
+    height: 45px;
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding-left: 15px;
+    font-size: 16px;
+    border-bottom-width: 2px;
+}
+.user-info .input-box input:focus,
+.user-info .input-box input:valid{
+    border-color: #9b59b6
+}
+.user-info .input-box select {
+    height: 45px;
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding-left: 15px;
+    font-size: 16px;
+    border-bottom-width: 2px;
+    -webkit-appearance: none; /* Loại bỏ giao diện mặc định của select */
+    -moz-appearance: none;
+    appearance: none;
+    background: url('your-arrow-icon.png') no-repeat right center; /* Thay thế mũi tên mặc định */
+    background-size: 20px; /* Điều chỉnh kích thước mũi tên */
+}
+
+.user-info .input-box select:focus {
+    border-color: #9b59b6;
+}
+form .button{
+    height: 45px;
+    margin-top: 10px ;
+    margin-bottom: 10px;
+}
+form .button input{
+    height: 100%;
+    width: 100%;
+    outline: none;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 5px;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+form .button input:hover{
+    background: linear-gradient(-135deg,  #71b7e6, #9b59b6);
+}
+.radio{
+    font-size: 20px;
+    text-transform: capitalize;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    padding-left: 30px;
+}
+.radio + .radio{
+    margin-left: 30px;
+}
+
+.radio input[type="radio"]{
+    display: none;
+}
+.radio span{
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    border: 3px solid #9b59b6; 
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 7px;
+}
+.radio span:after{
+    content: "";
+    height: 8px;
+    width: 8px;
+    background: #9b59b6;
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    border-radius: 50%;
+    transition: 300ms ease-in-out 0s;
+}
+.radio input[type="radio"]:checked ~ span:after{
+    transform: translate(-50%,-50%) scale(1);
+}
