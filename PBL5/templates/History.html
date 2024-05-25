@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Table.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Form.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Filler.css') }}">
+    <style>
+        .hidden {
+            display: none;
+        }
+        .container {
+            width: 800px;
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999; /* Đặt giá trị z-index cao hơn so với phần tử khác */
+        }
+    </style>
+    <script>
+	    function fillter() {
+	        var container = document.querySelector(".container");
+            container.style.display = "block";
+	    }
+        function cancel() {
+	        var container = document.querySelector(".container");
+            container.style.display = "none";
+	    }
+    </script>
+</head>
+<body>
+   <div class="header">
+        <a id="userListLink">Danh sách phương tiện</a>
+        <div class="input-group">
+            <input type="search" placeholder="Tìm kiếm thông tin...">
+            <img src="{{ url_for('static', filename='picture/search.png') }}" alt="">
+        </div>
+        <input class="button-add" type="button" onclick="fillter()" value="Lọc">
+    </div>
+    <form class="table__body">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 100px;">ID
+                    <th style="width: 250px;">Biển số xe
+                    <th style="width: 250px;">Ngày vào 
+                    <th style="width: 300px;">Thời gian vào 
+            </thead>
+            <tbody id="historyTableBody">
+                
+            </tbody>
+        </table> 
+    <div class="container" style="width: 800px; display: none;">
+        <div class="title" style="text-align: center;">Lọc</div>
+        <div class="confill">
+            <div class="filter">
+                <div class="input-box">
+                    <span class="details">Select from this Date</span>
+                    <input type="date" name="date_in">
+                </div>
+                <div class="input-box">
+                    <span class="details">To End of this Date</span>
+                    <input type="date" name="date_out">
+                </div>
+            </div>
+        </div>
+        <div class="button">
+            <input type="submit" name="action" style="margin-right: 30px;" value="Cofirm">
+            <input type="button" onclick="cancel()" value="Cancel">
+        </div>
+      </div>
+      </form>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        var table = document.getElementById("myTable");
+        var rows = table.getElementsByTagName("tr");
+        var container = document.querySelector(".container");
+        var userListLink = document.getElementById("userListLink");
+        });
+        
+        const search = document.querySelector(".input-group input")
+
+        search.addEventListener('input',searchTable);
+
+        function searchTable(){
+            let table_rows = document.querySelectorAll('tbody tr');
+            table_rows.forEach((row,i)=>{
+                let table_data = row.textContent.toLowerCase(),
+                    search_data = search.value.toLowerCase ();
+        
+                    row.classList.toggle('hide',table_data.indexOf(search_data) <0 );
+                    row.style.setProperty('--delay',i/25 + 's');
+            })
+        }
+    </script>
+    <script src="{{ url_for('static', filename='js/History.js') }}"></script>
+</body>
+</html>

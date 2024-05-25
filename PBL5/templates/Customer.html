@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Table.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Form.css') }}">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a id="userListLink">Danh sách người sử dụng</a>
+        <div class="input-group">
+            <input type="search" placeholder="Tìm kiếm thông tin...">
+            <img src="{{ url_for('static', filename='picture/search.png') }}" alt="Search Icon">
+        </div>
+        <input class="button-add" type="button" onclick="toggleAddCustomerForm()" value="Thêm">
+    </div>
+
+    <form class="table__body">
+        <table id="myTable">
+            <thead>
+                <tr>
+                    <th style="width: 30px;">ID</th>
+                    <th style="width: 400px;">Name</th>
+                    <th style="width: 30px;">Gender</th>
+                    <th>Phone</th>
+                    <th>CCCD</th>
+                </tr>
+            </thead>
+            <tbody id="customerTableBody"></tbody>
+        </table>
+    </form>
+
+    <div id="addCustomerForm" class="container hidden">
+        <div class="title">Customer Information</div>
+        <form id="addCustomerFormElement" onsubmit="createCustomer(event)">
+            <div class="user-info">
+                <div class="input-box">
+                    <span class="details">Name</span>
+                    <input type="text" id="name" placeholder="Name..." required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Phone</span>
+                    <input type="text" id="phone" placeholder="Phone..." required>
+                </div>
+                <div class="input-box">
+                    <span class="details">CCCD</span>
+                    <input type="text" id="cccd" placeholder="CCCD..." required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Gender</span>
+                    <div class="radio-group">
+                        <label class="radio">
+                            <input type="radio" name="gender" value="Male" required> Male
+                            <span></span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="gender" value="Female" required> Female
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="button">
+                    <input type="submit" value="Add">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="detailCustomerForm" class="container hidden">
+        <div class="title">Customer Information</div>
+        <form id="dcustomerForm"  onsubmit="update(event, this)">
+            <div class="user-info">
+                <div class="input-box">
+                    <span class="details">ID</span>
+                    <input type="text" name="id_view" placeholder="Id..." readonly required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Name</span>
+                    <input type="text" name="name_view" placeholder="Name..." required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Phone</span>
+                    <input type="text" name="phone_view" placeholder="Phone..." required>
+                </div>
+                <div class="input-box">
+                    <span class="details">CCCD</span>
+                    <input type="text" name="cccd_view" placeholder="CCCD..." required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Gender</span>
+                    <div class="radio-group">
+                        <label class="radio">
+                            <input type="radio" name="gender_view" value="Male"> Male
+                            <span></span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="gender_view" value="Female"> Female
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="button">
+                    <input type="submit" name="action" onclick="handleAction(event, this.form, this.value)" value="Update">
+                </div>
+                <div class="button">
+                    <input type="submit" name="action" onclick="handleAction(event, this.form, this.value)" value="Remove">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/Customer.js') }}"></script>
+</body>
+</html>
