@@ -66,7 +66,7 @@ def create_app():
     # @app.route('/image_feed')
     # def image_feed():
     #     return Response(read_from_webcam(), mimetype="multipart/x-mixed-replace; boundary=frame")
-    ESP32_URL = 'http://10.10.58.177/'
+    ESP32_URL = 'http://10.10.58.64/'
 
     def get_frame_from_esp32():
         # Get a frame from ESP32 camera

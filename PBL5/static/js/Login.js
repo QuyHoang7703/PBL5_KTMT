@@ -13,14 +13,14 @@ function myLogPassword() {
         c.style.opacity = "0";
     }
 }
-
+const baseUrl = 'http://10.10.58.77:5000';
 document.getElementById('loginForm').addEventListener('submit', async function(event) {
     event.preventDefault();
     const username = document.getElementById('logEmail').value;
     const password = document.getElementById('logPassword').value;
     const errorMessage = document.getElementById('error-message');
     try {
-        const response = await fetch('http://10.10.58.253:5000/account-management/account/check', {
+        const response = await fetch(`${baseUrl}/account-management/account/check`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

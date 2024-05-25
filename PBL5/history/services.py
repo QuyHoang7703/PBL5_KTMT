@@ -27,28 +27,31 @@ def add_history_service():
     # Lấy ra biển số xe của lịch sử gần nhất (nếu có)
     latest_history = History.query.order_by(History.date_in.desc(), History.time_in.desc()).first()
 
-    if latest_history and latest_history.vehicle_plate == vehicle_plate:
-        return jsonify({'message': 'Vehicle already checked in'}), 200
-    else:
-        history = History.query.filter_by(vehicle_plate=vehicle_plate).order_by(History.date_in.desc(), History.time_in.desc()).first()
-        if history and not history.date_out and not history.time_out:
+    # if latest_history and latest_history.vehicle_plate == vehicle_plate:
+    #     return jsonify({'message': 'Vehicle already checked in'}), 200
+    # else:
+    history = History.query.filter_by(vehicle_plate=vehicle_plate).order_by(History.date_in.desc(), History.time_in.desc()).first()
+    if history and not history.date_out and not history.time_out:
             # Nếu đã có ngày giờ vào mà chưa có ngày giờ ra, cập nhật ngày giờ ra
-            history.date_out = datetime.now().date()
-            history.time_out = datetime.now().time()
-            db.session.commit()
-            return jsonify({'message': 'History updated with check-out time'}), 200
-        else:
-            # Nếu chưa có hoặc đã có ngày giờ ra, tạo một lịch sử mới với ngày giờ vào
-            new_history = History(
-                vehicle_plate=vehicle_plate,
-                date_in=datetime.now().date(),
-                time_in=datetime.now().time(),
-                date_out=None,
-                time_out=None
-            )
-            db.session.add(new_history)
-            db.session.commit()
-            return jsonify({'message': 'New history entry created with check-in time'}), 200
+            # history.date_out = datetime.now().date()
+            # history.time_out = datetime.now().time()
+        history.date_out = datetime.strptime(data.get('date'), '%d-%m-%Y').date()
+        history.time_out = datetime.strptime(data.get('time'), '%H:%M:%S').time()
+
+        db.session.commit()
+        return jsonify({'message': 'History updated with check-out time'}), 200
+    else:
+        # Nếu chưa có hoặc đã có ngày giờ ra, tạo một lịch sử mới với ngày giờ vào
+        new_history = History(
+            vehicle_plate=vehicle_plate,
+            date_in=datetime.strptime(data.get('date'), '%d-%m-%Y').date(),
+            time_in=datetime.strptime(data.get('time'), '%H:%M:%S').time(),
+            date_out=None,
+            time_out=None
+        )
+        db.session.add(new_history)
+        db.session.commit()
+        return jsonify({'message': 'New history entry created with check-in time'}), 200
 
 def get_history_by_id_service(id):
     history = History.query.get(id)
