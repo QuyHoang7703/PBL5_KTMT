@@ -1,6 +1,6 @@
 async function fetchCustomers() {
     try {
-        const response = await fetch('http://10.10.58.253:5000/customer-management/customers');
+        const response = await fetch('http://10.10.58.56:5000/customer-management/customers');
         const data = await response.json();
         populateCustomerTable(data);
     } catch (error) {
@@ -35,7 +35,7 @@ async function createCustomer(event) {
     const gender = document.querySelector('input[name="gender"]:checked').value;
 
     try {
-        const response = await fetch('http://10.10.58.253:5000/customer-management/customer', {
+        const response = await fetch('http://10.10.58.56:5000/customer-management/customer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

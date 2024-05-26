@@ -1,35 +1,37 @@
-from flask import Flask, request, jsonify
-import requests
+from flask import Flask, request
 
 app = Flask(__name__)
 
+# Khởi tạo một set để lưu trữ các biển số xe
+license_plates_set = set()
 
-@app.route('/api/receive', methods=['POST'])
-def receive_send_data():
-    try:
-        # Nhận dữ liệu từ request của Flask
-        data = request.get_json()
-        license_plate = data.get('license_plate', None)
-        print(f"Received license plate: {license_plate}")
 
-        # URL của endpoint trong Django
-        django_url = "http://127.0.0.1:8000/"
+@app.route('/api/receive_send', methods=['POST'])
+def receive_send():
+    data = request.json
+    if 'license_plate' in data:
+        license_plate = data['license_plate']
+        print("Received license plate:", license_plate)
 
-        # Dữ liệu JSON bạn muốn gửi đến Django
-        data_to_send = {'license_plate': license_plate}
+        # Kiểm tra xem biển số xe đã tồn tại trong set chưa
+        if license_plate not in license_plates_set:
+            # Nếu chưa tồn tại, xoá hết các giá trị cũ trong set và thêm vào biển số xe mới
+            license_plates_set.clear()
+            license_plates_set.add(license_plate)
+            print("License plate added to set.")
 
-        # Gửi yêu cầu POST tới Django với dữ liệu JSON
-        response = requests.post(django_url, json=data_to_send)
+            # In ra tất cả các biển số xe trong set
+            print("Current set:", license_plates_set)
 
-        # In ra kết quả từ Django
-        print("Response from Django:", response.text)
+            # Thực hiện các xử lý khác với biển số xe nhận được ở đây
 
-        return jsonify({"status": "success", "message": "Data sent to Django successfully"})
-
-    except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"status": "error", "message": str(e)}), 400
+            return "Data received successfully."
+        else:
+            print("License plate already exists in set.")
+            return "License plate already exists.", 400
+    else:
+        return "Invalid data format.", 400
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8000)

@@ -7,7 +7,7 @@ import math
 import time
 import requests
 from ultralytics import YOLO
-
+from datetime import datetime
 
 def format_license_plate(candidates):
     first_line = []
@@ -84,7 +84,7 @@ confirmation_time = 5
 confidence_threshold = 0.8
 previous_license_plate = None
 
-stream_url = "http://10.10.58.177:81/stream"
+stream_url = "http://10.10.58.64:81/stream"
 yolo_model = YOLO(r"D:\train_new_2\train_new_2\weights\best.pt")
 classes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "K", "L",
            "M", "N", "P", "S", "T", "U", "V", "X", "Y", "Z"]
@@ -177,11 +177,17 @@ def process_camera_stream(stream_url, model, my_model):
                             #     print("Data sent successfully.")
                             # else:
                             #     print("Failed to send data.")
-                            url = 'http://10.10.58.180:5000/history-management/history'
-
+                            url = 'http://10.10.58.77:5000//history-management/history'
+                            current_time = datetime.now()
+                            # formatted_date = current_time.strftime("%Y-%m-%d")
+                            # formatted_time = current_time.strftime("%d-%m-%Y %H:%M:%S")  # Định dạng thời gian theo ý muốn
+                            print("Thời gian hiện tại nhận diện:", current_time)
                             # Dữ liệu bạn muốn gửi
                             data = {
                                 'vehicle_plate': detection_result,
+                                'date': current_time.strftime("%d-%m-%Y"),  # Sử dụng ngày đã format thành chuỗi
+                                'time': current_time.strftime("%H:%M:%S")
+
                             }
 
                             # Gửi yêu cầu POST đến server
