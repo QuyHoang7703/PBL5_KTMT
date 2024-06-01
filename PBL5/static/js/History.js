@@ -1,6 +1,6 @@
 async function fetchHistories() {
     try {
-        const response = await fetch('http://10.10.58.56:5000/history-management/histories');
+        const response = await fetch('http://192.168.138.10:5000/history-management/histories');
         const data = await response.json();
         populateCustomerTable(data);
     } catch (error) {

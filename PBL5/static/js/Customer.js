@@ -1,6 +1,6 @@
 async function fetchCustomers() {
     try {
-        const response = await fetch('http://10.10.58.56:5000/customer-management/customers');
+        const response = await fetch('http://192.168.138.10:5000/customer-management/customers');
         const data = await response.json();
         populateCustomerTable(data);
     } catch (error) {
@@ -35,7 +35,7 @@ async function createCustomer(event) {
     const gender = document.querySelector('input[name="gender"]:checked').value;
 
     try {
-        const response = await fetch('http://10.10.58.56:5000/customer-management/customer', {
+        const response = await fetch('http://192.168.138.10:5000/customer-management/customer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ search.addEventListener('input',searchTable);
 
 async function viewCustomerDetails(customerId) {
     try {
-        const response = await fetch(`http://10.10.58.253:5000/customer-management/customer/${customerId}`);
+        const response = await fetch(`http://192.168.138.10:5000/customer-management/customer/${customerId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -119,7 +119,7 @@ async function handleAction(event, formElement, actione) {
     };
 
     let method = 'PUT';
-    let url = `http://10.10.58.253:5000/customer-management/customer/${data.id_customer}`;
+    let url = `http://192.168.138.10:5000/customer-management/customer/${data.id_customer}`;
 
     if (actione === "Remove") {
         method = 'DELETE';

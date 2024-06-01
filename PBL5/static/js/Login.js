@@ -20,7 +20,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const password = document.getElementById('logPassword').value;
     const errorMessage = document.getElementById('error-message');
     try {
-        const response = await fetch('http://10.10.58.56:5000/account-management/account/check', {
+        const response = await fetch('http://192.168.138.10:5000/account-management/account/check', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

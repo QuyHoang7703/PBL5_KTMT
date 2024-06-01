@@ -1,6 +1,6 @@
 async function fetchTickets() {
     try {
-        const response = await fetch('http://10.10.58.56:5000/ticket-management/tickets');
+        const response = await fetch('http://192.168.138.10:5000/ticket-management/tickets');
         const data = await response.json();
         populateTicketTable(data);
     } catch (error) {
@@ -41,7 +41,7 @@ async function createTicket(event) {
     };
 
     try {
-        const response = await fetch('http://10.10.58.56:5000/ticket-management/ticket', {
+        const response = await fetch('http://192.168.138.10:5000/ticket-management/ticket', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ async function createTicket(event) {
 
 async function viewTicketDetails(ticketId) {
     try {
-        const response = await fetch(`http://10.10.58.56:5000/ticket-management/ticket/${ticketId}`);
+        const response = await fetch(`http://192.168.138.10:5000/ticket-management/ticket/${ticketId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -102,7 +102,7 @@ async function handleTicketAction(event, formElement, action) {
         id_customer: formData.get('customerId_view'),
     };
     let method = 'PUT';
-    let url = `http://10.10.58.56:5000/ticket-management/ticket/${data.vehicle_plate}`;
+    let url = `http://192.168.138.10:5000/ticket-management/ticket/${data.vehicle_plate}`;
 
     if (action === "Remove") {
         method = 'DELETE';
