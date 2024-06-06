@@ -1,4 +1,4 @@
-const baseUrl = 'http://10.10.58.77:5000';
+const baseUrl = 'http://192.168.1.2:5000';
 async function fetchCustomers() {
     try {
         const response = await fetch(`${baseUrl}/customer-management/customers`);

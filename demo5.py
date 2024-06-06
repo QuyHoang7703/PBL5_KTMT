@@ -16,38 +16,6 @@ if torch.cuda.is_available():
 else:
     print("Using CPU")
 
-def correct_tilt(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # Làm mờ ảnh có thể giúp cải thiện việc phát hiện cạnh
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    edges = cv2.Canny(blur, 50, 150, apertureSize=3)
-    lines = cv2.HoughLines(edges, 1, np.pi / 180, 100)
-
-    if lines is not None:
-        angles = []
-        for rho, theta in lines[:, 0]:
-            a = np.cos(theta)
-            b = np.sin(theta)
-            x0 = a * rho
-            y0 = b * rho
-            x1 = int(x0 + 1000 * (-b))
-            y1 = int(y0 + 1000 * (a))
-            x2 = int(x0 - 1000 * (-b))
-            y2 = int(y0 - 1000 * (a))
-
-            angle = np.degrees(np.arctan2(y2 - y1, x2 - x1))
-            if abs(angle) < 60:  # Giới hạn góc xoay để tránh những thay đổi quá lớn
-                angles.append(angle)
-
-        if len(angles) > 0:
-            median_angle = np.median(angles)
-            (h, w) = image.shape[:2]
-            center = (w // 2, h // 2)
-            M = cv2.getRotationMatrix2D(center, median_angle, 1.0)
-            corrected_img = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
-            return corrected_img
-    return image
-
 
 def find_bottom_points(img):
     # Chuyển đổi ảnh sang ảnh grayscale
@@ -122,12 +90,12 @@ def format_license_plate(candidates):
     if len(second_line) == 0:
         license_plate = "".join([str(ele[0]) for ele in first_line])
     else:
-        license_plate = "".join([str(ele[0]) for ele in first_line]) + "-" + "".join([str(ele[0]) for ele in second_line])
+        license_plate = "".join([str(ele[0]) for ele in first_line]) + "".join([str(ele[0]) for ele in second_line])
     return license_plate
 
 # model = YOLO(r"D:\PyCharm-Project\pythonProject12\runs\detect\train_3\weights\best.pt")
 model = YOLO(r"D:\train_new_2\train_new_2\weights\best.pt")
-img = cv2.imread(r"D:\HocKy2-23_24\PBL5\Test Model\218.jpg")
+img = cv2.imread(r"D:\HocKy2-23_24\PBL5\Test Model\Screenshot 2024-05-02 145936.png")
 results = model.predict(img)
 
 classes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "K", "L",
@@ -155,10 +123,12 @@ H = int(H)
 
 # img_crop = img[Y: Y + H , X : X + W ]
 img_crop = img[Y - 2: Y + H + 4, X - 2: X + W + 4]
+img_crop = imutils.resize(img_crop, width=390)
 cv2.imshow("Before", img_crop)
 cv2.waitKey(0)
 A, B = find_bottom_points(img_crop)
 img_crop = rotate_image(img_crop, A, B)
+img_crop = imutils.resize(img_crop, width=390)
 cv2.imshow("Before", img_crop)
 cv2.waitKey(0)
 
@@ -167,32 +137,18 @@ cv2.waitKey(0)
 # cv2.imshow("After 1.2", img_crop)
 # cv2.waitKey(0)
 
-# print('Width: ', W)
-# print('Height: ', H)
-# t = H/W
-# print("Ngưỡng: ", t)
-# if t<=0.4:
-#     block_size = int(W / 8) if int(W / 8) % 2 != 0 else int(W / 8) + 1
-# else:
-#     block_size = int(W/4) if int(W/4)%2 !=0 else int(W/4)+1
-# print("BLOCK SIZE ", block_size)
 V = cv2.split(cv2.cvtColor(img_crop, cv2.COLOR_BGR2HSV))[2]
-# print("Kích thước", V.shape[1]/20)
-# block_size = int(V.shape[1]/20) if int(V.shape[1]/20) % 2 != 0 else int(V.shape[1]/20) + 1
-T = threshold_local(V, 35, offset=15, method="gaussian")
+T = threshold_local(V, 35, offset=13, method="gaussian")
 thresh = (V > T).astype("uint8") * 255
 
 # Hiển thị kết quả
 
-# cv2.imshow("Binary", binary)
 cv2.imshow("Thresh", thresh)
 cv2.waitKey(0)
-
 thresh = cv2.bitwise_not(thresh)
-thresh = imutils.resize(thresh, width=400)
+thresh = imutils.resize(thresh, width=390)
 thresh = cv2.medianBlur(thresh, 5)
 cv2.imshow("Thresh after", thresh)
-# cv2.imshow("Edged", edged)
 cv2.waitKey(0)
 
 # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
@@ -203,12 +159,12 @@ cv2.waitKey(0)
 # thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
 # cv2.imshow("Closed after Opened", thresh)
 # cv2.waitKey(0)
-kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-thresh = cv2.morphologyEx(thresh, cv2.MORPH_DILATE, kernel)
-
-# Hiển thị kết quả sau khi điều chỉnh
-cv2.imshow("Thresh after dilation", thresh)
-cv2.waitKey(0)
+# kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+# thresh = cv2.morphologyEx(thresh, cv2.MORPH_DILATE, kernel)
+#
+# # Hiển thị kết quả sau khi điều chỉnh
+# cv2.imshow("Thresh after dilation", thresh)
+# cv2.waitKey(0)
 candidates = []
 bounding_rects = []
 stat = []

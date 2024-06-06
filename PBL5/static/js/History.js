@@ -1,4 +1,4 @@
-const baseUrl = 'http://10.10.58.77:5000';
+const baseUrl = 'http://192.168.1.2:5000';
 async function fetchHistories() {
     try {
         const response = await fetch(`${baseUrl}/history-management/histories`);
@@ -13,15 +13,17 @@ function populateCustomerTable(histories) {
     const tableBody = document.getElementById('historyTableBody');
     tableBody.innerHTML = ''; // Clear existing rows
 
-    histories.forEach(histories => {
+    const reversedHistories = histories.slice().reverse();
+
+    reversedHistories.forEach(history => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${histories.id_history}</td>
-            <td>${histories.vehicle_plate}</td>
-            <td>${histories.date_in}</td>
-            <td>${histories.time_in}</td>
-            <td>${histories.date_out}</td>
-            <td>${histories.time_out}</td>
+            <td>${history.id_history}</td>
+            <td>${history.vehicle_plate}</td>
+            <td>${history.date_in}</td>
+            <td>${history.time_in}</td>
+            <td>${history.date_out}</td>
+            <td>${history.time_out}</td>
         `;
         tableBody.appendChild(row);
     });

@@ -13,7 +13,7 @@ function myLogPassword() {
         c.style.opacity = "0";
     }
 }
-const baseUrl = 'http://10.10.58.77:5000';
+const baseUrl = 'http://192.168.1.2:5000';
 document.getElementById('loginForm').addEventListener('submit', async function(event) {
     event.preventDefault();
     const username = document.getElementById('logEmail').value;

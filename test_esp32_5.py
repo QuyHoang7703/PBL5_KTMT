@@ -66,14 +66,14 @@ def initialize_camera_stream(url):
     return cap
 
 
-def send_to_server(data):
-    try:
-        response = requests.post("http://localhost:5000/api/receive_send", json=data)  # URL của server Flask
-        response.raise_for_status()  # Kiểm tra mã trạng thái HTTP
-        return response.status_code
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to send data: {e}")
-        return None
+# def send_to_server(data):
+#     try:
+#         response = requests.post("http://localhost:5000/api/receive_send", json=data)  # URL của server Flask
+#         response.raise_for_status()  # Kiểm tra mã trạng thái HTTP
+#         return response.status_code
+#     except requests.exceptions.RequestException as e:
+#         print(f"Failed to send data: {e}")
+#         return None
 
 
 last_detection_time = 0
@@ -84,7 +84,7 @@ confirmation_time = 5
 confidence_threshold = 0.8
 previous_license_plate = None
 
-stream_url = "http://10.10.58.64:81/stream"
+stream_url = "http://192.168.1.32:81/stream"
 yolo_model = YOLO(r"D:\train_new_2\train_new_2\weights\best.pt")
 classes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "K", "L",
            "M", "N", "P", "S", "T", "U", "V", "X", "Y", "Z"]
@@ -109,10 +109,11 @@ def process_camera_stream(stream_url, model, my_model):
                         if len(boxes) == 0:
                             continue
                         for box in boxes:
-                            X = box.xyxy[0][0]
-                            Y = box.xyxy[0][1]
-                            W = box.xywh[0][2]
-                            H = box.xywh[0][3]
+                            if box.conf>0.9 and len(box.xyxy>=2) and len(box.xywh>=2):
+                                X = box.xyxy[0][0]
+                                Y = box.xyxy[0][1]
+                                W = box.xywh[0][2]
+                                H = box.xywh[0][3]
                     if X is not None and Y is not None and W is not None and H is not None:
                         img_crop = frame[int(Y) - 2: int(Y) + int(H) + 4, int(X) - 2: int(X) + int(W) + 4]
                         if img_crop is None or img_crop.size == 0:
@@ -121,7 +122,7 @@ def process_camera_stream(stream_url, model, my_model):
                         A, B = find_bottom_points(img_crop)
                         img_crop = rotate_image(img_crop, A, B)
                         V = cv2.split(cv2.cvtColor(img_crop, cv2.COLOR_BGR2HSV))[2]
-                        T = threshold_local(V, 35, offset=10, method="gaussian")
+                        T = threshold_local(V, 35, offset=13, method="gaussian")
                         thresh = (V > T).astype("uint8") * 255
                         thresh = cv2.bitwise_not(thresh)
                         thresh = imutils.resize(thresh, width=390)
@@ -134,39 +135,44 @@ def process_camera_stream(stream_url, model, my_model):
                             mask[labels == label] = 255
                             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
                             for contour in contours:
-                                x, y, w, h = cv2.boundingRect(contour)
-                                aspect_ratio = w / float(h)
-                                solidity = cv2.contourArea(contour) / float(w * h)
-                                height_ratio = h / float(thresh.shape[0])
-                                if 0.2 < aspect_ratio < 1.0 and 1.0 > solidity > 0.3 and 0.2 < height_ratio < 1.0:
-                                    character = np.array(mask[y - 2: y + h + 4, x - 2:x + w + 4])
-                                    if character.size > 0:
-                                        character_resized = cv2.resize(character, (30, 40),
-                                                                       interpolation=cv2.INTER_AREA)
-                                        character_normalized = character_resized / 255.0
-                                        character_input = np.expand_dims(character_normalized, axis=-1)
-                                        candidates.append((character_input, (x, y)))
+                                if len(contour) > 0:
+                                    x, y, w, h = cv2.boundingRect(contour)
+                                    aspect_ratio = w / float(h)
+                                    solidity = cv2.contourArea(contour) / float(w * h)
+                                    height_ratio = h / float(thresh.shape[0])
+                                    if 0.2 < aspect_ratio < 1.0 and 1.0 > solidity > 0.3 and 0.2 < height_ratio < 1.0:
+                                        character = np.array(mask[y - 2: y + h + 4, x - 2:x + w + 4])
+                                        if character.size > 0:
+                                            character_resized = cv2.resize(character, (30, 40),
+                                                                           interpolation=cv2.INTER_AREA)
+                                            character_normalized = character_resized / 255.0
+                                            character_input = np.expand_dims(character_normalized, axis=-1)
+                                            candidates.append((character_input, (x, y)))
+                                    print("alo")
                         predicted_characters = []
                         formatted_candidates = []
-                        for character_input, coords in candidates:
-                            character_input = np.expand_dims(character_input, axis=0)
-                            prediction = my_model.predict(character_input)
-                            predicted_index = np.argmax(prediction)
-                            predicted_character = classes[predicted_index]
-                            predicted_characters.append(predicted_character)
-                            formatted_candidates.append((predicted_character, coords))
-                        bien_so_du_doan = format_license_plate(formatted_candidates)
-                        print(bien_so_du_doan)
-
-                        current_time = time.time()
-                        if bien_so_du_doan == previous_license_plate:
-                            if (current_time - last_detection_time) >= confirmation_time:
-                                detection_confirmed = True
+                        if not candidates:
+                            print("No candidates found.")
                         else:
-                            previous_license_plate = bien_so_du_doan  # Lưu trữ biển số hiện tại
-                            detection_result = bien_so_du_doan
-                            last_detection_time = current_time
-                            detection_confirmed = False
+                            for character_input, coords in candidates:
+                                character_input = np.expand_dims(character_input, axis=0)
+                                prediction = my_model.predict(character_input)
+                                predicted_index = np.argmax(prediction)
+                                predicted_character = classes[predicted_index]
+                                predicted_characters.append(predicted_character)
+                                formatted_candidates.append((predicted_character, coords))
+                            bien_so_du_doan = format_license_plate(formatted_candidates)
+                            print(bien_so_du_doan)
+
+                            current_time = time.time()
+                            if bien_so_du_doan == previous_license_plate:
+                                if (current_time - last_detection_time) >= confirmation_time:
+                                    detection_confirmed = True
+                            else:
+                                previous_license_plate = bien_so_du_doan  # Lưu trữ biển số hiện tại
+                                detection_result = bien_so_du_doan
+                                last_detection_time = current_time
+                                detection_confirmed = False
 
                         if detection_confirmed:
                             # data_to_send = {
@@ -177,7 +183,7 @@ def process_camera_stream(stream_url, model, my_model):
                             #     print("Data sent successfully.")
                             # else:
                             #     print("Failed to send data.")
-                            url = 'http://10.10.58.77:5000//history-management/history'
+                            url = 'http://192.168.1.2:5000/history-management/history'
                             current_time = datetime.now()
                             # formatted_date = current_time.strftime("%Y-%m-%d")
                             # formatted_time = current_time.strftime("%d-%m-%Y %H:%M:%S")  # Định dạng thời gian theo ý muốn
