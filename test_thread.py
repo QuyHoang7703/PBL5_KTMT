@@ -8,7 +8,7 @@ import time
 import requests
 from ultralytics import YOLO
 from datetime import datetime
-
+import threading
 def format_license_plate(candidates):
     first_line = []
     second_line = []
@@ -70,17 +70,14 @@ detection_result = None
 confidence = 0
 detection_confirmed = False
 confirmation_time = 2
-confidence_threshold = 0.8
+confidence_threshold = 0.9
 previous_license_plate = None
 
-stream_url = "http://10.10.49.199:81/stream"
-yolo_model = YOLO(r"D:\train_new_2\train_new_2\weights\best.pt")
+
 classes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "K", "L",
            "M", "N", "P", "S", "T", "U", "V", "X", "Y", "Z"]
-character_model = load_model(r"D:\PyCharm-Project\PBL5-KTMT_2\MODEL\model_gray_thresh_30_40_v13_ket_hop.keras")
 
-
-def process_camera_stream(stream_url, model, my_model):
+def process_camera_stream(stream_url, model, my_model, window_name):
     global last_detection_time, detection_result, detection_confirmed, previous_license_plate
     while True:
         try:
@@ -98,7 +95,7 @@ def process_camera_stream(stream_url, model, my_model):
                         if len(boxes) == 0:
                             continue
                         for box in boxes:
-                            if box.conf>0.9 and len(box.xyxy>=2) and len(box.xywh>=2):
+                            if box.conf>confidence_threshold and len(box.xyxy>=2) and len(box.xywh>=2):
                                 X = box.xyxy[0][0]
                                 Y = box.xyxy[0][1]
                                 W = box.xywh[0][2]
@@ -108,10 +105,10 @@ def process_camera_stream(stream_url, model, my_model):
                         if img_crop is None or img_crop.size == 0:
                             print("Vùng cắt trống hoặc không hợp lệ")
                             continue
-                        # A, B = find_bottom_points(img_crop)
-                        # img_crop = rotate_image(img_crop, A, B)
+                        A, B = find_bottom_points(img_crop)
+                        img_crop = rotate_image(img_crop, A, B)
                         V = cv2.split(cv2.cvtColor(img_crop, cv2.COLOR_BGR2HSV))[2]
-                        T = threshold_local(V, 35, offset=12, method="gaussian")
+                        T = threshold_local(V, 35, offset=11, method="gaussian")
                         thresh = (V > T).astype("uint8") * 255
                         thresh = cv2.bitwise_not(thresh)
                         thresh = imutils.resize(thresh, width=390)
@@ -137,7 +134,6 @@ def process_camera_stream(stream_url, model, my_model):
                                             character_normalized = character_resized / 255.0
                                             character_input = np.expand_dims(character_normalized, axis=-1)
                                             candidates.append((character_input, (x, y)))
-                                    # print("alo")
                         predicted_characters = []
                         formatted_candidates = []
                         if not candidates:
@@ -145,7 +141,7 @@ def process_camera_stream(stream_url, model, my_model):
                         else:
                             for character_input, coords in candidates:
                                 character_input = np.expand_dims(character_input, axis=0)
-                                prediction = my_model.predict(character_input)
+                                prediction = character_model.predict(character_input)
                                 predicted_index = np.argmax(prediction)
                                 predicted_character = classes[predicted_index]
                                 predicted_characters.append(predicted_character)
@@ -158,37 +154,23 @@ def process_camera_stream(stream_url, model, my_model):
                                 if (current_time - last_detection_time) >= confirmation_time:
                                     detection_confirmed = True
                             else:
-                                previous_license_plate = bien_so_du_doan  # Lưu trữ biển số hiện tại
+                                previous_license_plate = bien_so_du_doan
                                 detection_result = bien_so_du_doan
                                 last_detection_time = current_time
                                 detection_confirmed = False
 
                             if detection_confirmed:
-                                # data_to_send = {
-                                #     "license_plate": detection_result,
-                                # }
-                                # status = send_to_server(data_to_send)
-                                # if status == 200:
-                                #     print("Data sent successfully.")
-                                # else:
-                                #     print("Failed to send data.")
                                 url = 'http://10.10.59.222:5000/history-management/history'
                                 current_time = datetime.now()
-                                # formatted_date = current_time.strftime("%Y-%m-%d")
-                                # formatted_time = current_time.strftime("%d-%m-%Y %H:%M:%S")  # Định dạng thời gian theo ý muốn
                                 print("Thời gian hiện tại nhận diện:", current_time)
-                                # Dữ liệu bạn muốn gửi
                                 data = {
                                     'vehicle_plate': detection_result,
-                                    'date': current_time.strftime("%d-%m-%Y"),  # Sử dụng ngày đã format thành chuỗi
+                                    'date': current_time.strftime("%d-%m-%Y"),
                                     'time': current_time.strftime("%H:%M:%S")
-
                                 }
 
-                                # Gửi yêu cầu POST đến server
                                 response = requests.post(url, json=data)
 
-                                # Kiểm tra kết quả
                                 if response.status_code == 200:
                                     print("Dữ liệu đã được gửi thành công!")
                                 else:
@@ -196,21 +178,29 @@ def process_camera_stream(stream_url, model, my_model):
                                 detection_confirmed = False
 
                             cv2.rectangle(frame, (int(X), int(Y)), (int(X + W), int(Y + H)), (0, 0, 255, 2))
-                            cv2.putText(frame, bien_so_du_doan, (int(X), int(Y)), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255),
-                                        2)
-                    cv2.imshow("Segmentation", frame)
+                            cv2.putText(frame, bien_so_du_doan, (int(X), int(Y)), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), 2)
+                    cv2.imshow(window_name, frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
             vid.release()
         except Exception as e:
             print(f"Đã xảy ra lỗi: {e}")
-            continue
-            # time.sleep(0.5)  # Đợi một giây trước khi thử lại
+            time.sleep(0.5)  # Đợi một giây trước khi thử lại
 
+# Khởi tạo các mô hình
+stream_url_vao = "http://10.10.49.199:81/stream"
+stream_url_ra = "http://10.10.58.53:81/stream"
+yolo_model = YOLO(r"D:\train_new_2\train_new_2\weights\best.pt")
+character_model = load_model(r"D:\PyCharm-Project\PBL5-KTMT_2\MODEL\model_gray_thresh_30_40_v13_ket_hop.keras")
 
-# Call the function
-# process_camera_stream(stream_url, model, my_model)
+# Tạo các luồng riêng biệt cho từng camera
+thread_vao = threading.Thread(target=process_camera_stream, args=(stream_url_vao, yolo_model, character_model, "Camera Vào"))
+thread_ra = threading.Thread(target=process_camera_stream, args=(stream_url_ra, yolo_model, character_model, "Camera Ra"))
 
-# Cấu hình và chạy quá trình xử lý video
+# Bắt đầu các luồng
+thread_vao.start()
+thread_ra.start()
 
-process_camera_stream(stream_url, yolo_model, character_model)
+# Chờ các luồng hoàn thành (nếu cần)
+thread_vao.join()
+thread_ra.join()
