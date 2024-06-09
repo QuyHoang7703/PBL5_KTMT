@@ -17,7 +17,7 @@ def add_history():
         current_time = time.time()
         
         # Kiểm tra xem đã đủ 30 giây kể từ lần yêu cầu cuối chưa
-        if current_time - last_request_time < 30:
+        if current_time - last_request_time < 20:
             return jsonify(error="Đợi 30 giây trước khi gửi yêu cầu mới"), 429
         
         # Cập nhật thời gian của yêu cầu cuối cùng

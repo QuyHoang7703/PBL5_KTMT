@@ -8,9 +8,12 @@ from .customer.controller import customers
 from .history.controller import histories
 from .webcam import Webcam
 import requests
+# from .xu_li import generate_frames,stream_url,yolo_model,character_model
+from .stream_cam import generate_frames,stream_url_vao,yolo_model,character_model,stream_url_ra
+# import cv2
+import threading
 
 webcam = Webcam()
-
 
 def create_app():
     app = Flask(__name__)
@@ -54,27 +57,45 @@ def create_app():
     def history():
         return render_template('/history.html')  
     
-    @app.route('/camera')
-    def camera():
-        return render_template('/camera.html')  
-    
-    # def read_from_webcam():
-    #     while True:
-    #         image = next(webcam.get_frame())
-    #         yield b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n--frame\r\n'
-            
-    # @app.route('/image_feed')
-    # def image_feed():
-    #     return Response(read_from_webcam(), mimetype="multipart/x-mixed-replace; boundary=frame")
-    ESP32_URL = 'http://10.10.58.64/'
+    # @app.route('/camera')
+    # def camera():
+    #     return render_template('/camera.html')
 
-    def get_frame_from_esp32():
-        # Get a frame from ESP32 camera
-        response = requests.get(ESP32_URL)
-        return response.content
+    # def gen_frames():
+    #     # Gọi hàm xử lý video từ module của bạn
+    #     for frame in process_camera_stream():
+    #         ret, buffer = cv2.imencode('.jpg', frame)
+    #         if not ret:
+    #             continue
+    #         frame_bytes = buffer.tobytes()
+    #         yield (b'--frame\r\n'
+    #                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+    #
+    # @app.route('/video_feed')
+    # def video_feed():
+    #     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-    @app.route('/image_feed')
-    def image_feed():
-        return Response(get_frame_from_esp32(), mimetype='multipart/x-mixed-replace; boundary=frame')
-    
+    # @app.route('/video_feed')
+    # def video_feed():
+    #     return Response(generate_frames(stream_url, yolo_model, character_model),
+    #                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+    @app.route('/video_feed1')
+    def video_feed1():
+        return Response(generate_frames(stream_url_vao), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+    @app.route('/video_feed2')
+    def video_feed2():
+        return Response(generate_frames(stream_url_ra), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+    @app.route('/test')
+    def test():
+        return render_template('test.html')
+
+    thread_1 = threading.Thread(target=generate_frames, args=(stream_url_vao,))
+    thread_2 = threading.Thread(target=generate_frames, args=(stream_url_ra,))
+    thread_1.start()
+    thread_2.start()
+
     return app
+

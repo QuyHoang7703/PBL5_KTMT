@@ -10,7 +10,7 @@ histories_schema = HistorySchema(many=True)
 
 from datetime import datetime
 from PBL5.model import Ticket
-
+import requests , time
 def add_history_service():
     data = request.json
     vehicle_plate = data.get('vehicle_plate')
@@ -39,6 +39,8 @@ def add_history_service():
         history.time_out = datetime.strptime(data.get('time'), '%H:%M:%S').time()
 
         db.session.commit()
+        esp8266_ip = "http://192.168.174.150/open_door_ra"
+        response = requests.get(esp8266_ip)
         return jsonify({'message': 'History updated with check-out time'}), 200
     else:
         # Nếu chưa có hoặc đã có ngày giờ ra, tạo một lịch sử mới với ngày giờ vào
@@ -51,6 +53,23 @@ def add_history_service():
         )
         db.session.add(new_history)
         db.session.commit()
+        esp8266_ip = 'http://192.168.174.150/open_door_vao'
+        response = requests.get(esp8266_ip)
+        # retries = 5
+        # delay = 2  # Thời gian chờ ban đầu tính bằng giây
+        #
+        # for i in range(retries):
+        #     try:
+        #         response = requests.get(esp8266_ip, timeout=10)
+        #         response.raise_for_status()  # Tạo lỗi HTTPError cho các phản hồi xấu
+        #         break  # Nếu yêu cầu thành công, thoát vòng lặp
+        #     except requests.exceptions.RequestException as e:
+        #         print(f"Thử lần {i + 1} thất bại: {e}")
+        #         time.sleep(delay)
+        #         delay *= 2  # Backoff theo cấp số nhân
+        # else:
+        #     print("Tất cả các lần thử kết nối đến máy chủ đều thất bại.")
+
         return jsonify({'message': 'New history entry created with check-in time'}), 200
 
 def get_history_by_id_service(id):
