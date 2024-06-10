@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Form.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Form2.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Filler.css') }}">
+    <style>
+        .hidden {
+            display: none;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px; /* Khoảng cách lề trên là 20px */
+            background: #14161e;
+            font-family: 'Open Sans', sans-serif;
+            align-items: center; /* Căn giữa theo chiều dọc */
+            height: 100vh; /* Đặt chiều cao của body là 100% chiều cao của màn hình */
+            justify-content: flex-start
+          }
+    </style>
+</head>
+<body>
+    <main class="table" id="customers_table">
+        <section class="table__header">
+            <h1>Lịch sử xe</h1>
+            <div class="input-group">
+                <input type="search" placeholder="Search Data..." id="timkiem">
+                <img src="{{ url_for('static', filename='picture/search.png') }}" alt="">
+            </div>
+            <input type="button" id="export-file"  onclick="fillter()" value="Lọc">
+        </section>
+        <section class="table__body">
+            <table>
+                <thead>
+                    <tr>
+                        <th> Vehcile Plate <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Date In <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Time In <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Date Out <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Time Out <span class="icon-arrow">&UpArrow;</span></th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <div class="container" style="width: 800px; position: absolute; align-items: center; display: none; ">
+        <div class="title" style="text-align: center;">Lọc</div>
+        <div class="confill">
+            <div class="filter">
+                <div class="input-box">
+                    <span class="details">Select from this Date</span>
+                    <input type="date" name="date_in">
+                </div>
+                <div class="input-box">
+                    <span class="details">To End of this Date</span>
+                    <input type="date" name="date_out">
+                </div>
+            </div>
+            <div class="filter">
+                <div class="input-box">
+                    <span class="details">Select from this Time</span>
+                    <input type="time" name="time_in">
+                </div>
+                <div class="input-box">
+                    <span class="details">To End of this Time</span>
+                    <input type="time" name="time_out">
+                </div>
+            </div>
+        </div>
+        <div class="button">
+            <input type="submit" id="confirm_btn" name="action" style="margin-right: 30px;" value="Cofirm">
+            <input type="button" onclick="cancel()" value="Cancel">
+        </div>
+      </div>
+    <script>
+        const baseUrl = "{{ base_url }}";
+    </script>
+    <script src="{{ url_for('static', filename='js/History.js') }}"></script>
+</body>
+</html>
+

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Form.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Form2.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px; /* Khoảng cách lề trên là 20px */
+            background: #14161e;
+            font-family: 'Open Sans', sans-serif;
+            align-items: center; /* Căn giữa theo chiều dọc */
+            height: 100vh; /* Đặt chiều cao của body là 100% chiều cao của màn hình */
+            justify-content: flex-start
+        }
+        button {
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px;
+            color: #f22222;
+        }
+        
+        td button:nth-child(1) {
+            background-color: #9298cf;
+        }
+        
+        td button:nth-child(2) {
+            background-color: #f8e0ed;
+        }
+    </style>
+</head>
+<body>
+    <main class="table" id="customers_table">
+        <section class="table__header">
+            <h1>Quản lí xe</h1>
+            <div class="input-group">
+                <input type="search" placeholder="Search Data..." id="timkiem">
+                <img src="{{ url_for('static', filename='picture/search.png') }}" alt="">
+            </div>
+            <input type="button" id="export-file" onclick="toggleAddTicketForm()" value="Đăng kí">
+        </section>
+        <section class="table__body">
+            <table>
+                <thead>
+                    <tr>
+                        <th> Vehcile Plate <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Init Date <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Expiry <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Status <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Time <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Action </th>
+                    </tr>
+                </thead>
+                <tbody id="ticketTableBody">
+                    
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <div id="addTicketForm" class="container hidden">
+        <div class="title">Ticket Information</div>
+        <form id="addTicketFormElement" onsubmit="createTicket(event)">
+            <div class="user-info">
+                <div class="input-box">
+                    <span class="details">Vehicle Plate</span>
+                    <input type="text" id="vehiclePlate" placeholder="Vehicle Plate..." required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Expiry</span>
+                    <input type="date" id="expiry" required>
+                </div>
+                <div class="input-box">
+                    <span class="details">CCCD</span>
+                    <input type="text" id="cccd" placeholder="CCCD..." required>
+                </div>
+                <p id="error-message" class="error-message"></p>
+                <div class="button">
+                    <input type="submit" value="Đăng kí">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="detailTicketForm" class="container hidden">
+        <div class="title">Ticket Information</div>
+        <form id="dticketForm" onsubmit="updateTicket(event, this)">
+            <div class="user-info">
+                <div class="input-box">
+                    <span class="details">Vehicle Plate</span>
+                    <input type="text" name="vehiclePlate_view" placeholder="Vehicle Plate..." required readonly>
+                </div>
+                <div class="input-box">
+                    <span class="details">Init Date</span>
+                    <input type="date" name="initDate_view" required readonly>
+                </div>
+                <div class="input-box">
+                    <span class="details">Expiry</span>
+                    <input type="date" name="expiry_view" required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Status</span>
+                    <input type="text" name="status_view" required>
+                </div>
+                <div class="button">
+                    <input type="submit" name="action" id="giahan" onclick="handleTicketAction(event, this.form, this.value)" value="Gia hạn">
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        const baseUrl = "{{ base_url }}";
+    </script>
+    <script src="{{ url_for('static', filename='js/Ticket.js') }}"></script>
+</body>
+</html>

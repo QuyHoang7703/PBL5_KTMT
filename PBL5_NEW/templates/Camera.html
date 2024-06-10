@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Streaming</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* Khoảng cách giữa hai luồng video */
+        }
+        .video {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .video h1 {
+            margin-bottom: 10px;
+        }
+        img {
+            border: 2px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="video">
+            <h1>Camera 1</h1>
+            <img src="{{ url_for('video_feed1') }}" width="640" height="480">
+        </div>
+        <div class="video">
+            <h1>Camera 2</h1>
+            <img src="{{ url_for('video_feed2') }}" width="640" height="480">
+        </div>
+    </div>
+</body>
+</html>
