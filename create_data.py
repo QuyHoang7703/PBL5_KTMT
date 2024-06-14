@@ -8,7 +8,7 @@ dataset_path = r"E:\CNN letter Dataset - Ket_Hop"
 # Khởi tạo danh sách chứa ảnh và nhãn tương ứng
 images = []
 labels = []
-
+# Tạo các label cho các ảnh kí tự
 classes = {
     '0': 0,
     '1': 1,
